@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.clocksnfactions.ui.viewmodel.FactionViewModel
 import com.example.clocksnfactions.ui.components.FactionRow
+import com.example.clocksnfactions.ui.components.FactionItem
 import com.example.clocksnfactions.ui.components.AddFactionDialog
 /**
  * MainScreen — показывает список фракций. По клику на фракцию открывает экран деталей.
@@ -50,8 +51,11 @@ fun MainScreen(viewModel: FactionViewModel) {
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
                     items(factions, key = { it.id }) { f ->
-                        FactionRow(
+                        FactionItem(
                             faction = f,
+                            onRankChange = { delta -> viewModel.updateRank(f, delta) },
+                            onToggleControl = { viewModel.toggleControl(f) },
+                            onRelationshipChange = { delta -> viewModel.updateRelationship(f, delta) },
                             onDelete = { viewModel.deleteFaction(f) },
                             onClick = {
                                 selectedFactionId = f.id

@@ -12,6 +12,8 @@ class FactionRepository(private val dao: FactionDao) {
         val entity = FactionEntity(name = name)
         return dao.insert(entity)
     }
-
+    suspend fun update(f: FactionEntity) {
+        dao.update(f)
+    }
     suspend fun delete(f: FactionEntity) = dao.delete(f)
 }

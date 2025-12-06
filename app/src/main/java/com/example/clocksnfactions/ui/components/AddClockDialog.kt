@@ -28,8 +28,12 @@ fun AddClockDialog(onDismiss: () -> Unit, onCreate: (String, Int) -> Unit) {
                             Text("$v")
                         }
                     }
-                    OutlinedTextField(value = custom, onValueChange = { custom = it }, modifier = Modifier.width(80.dp), label = { Text("Другое") })
                 }
+                OutlinedTextField(
+                    value = custom,
+                    onValueChange = { custom = it },
+                    placeholder = { Text("Другое") }
+                )
             }
         },
         confirmButton = {

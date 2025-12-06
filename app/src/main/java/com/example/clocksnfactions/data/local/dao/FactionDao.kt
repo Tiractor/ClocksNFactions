@@ -13,6 +13,9 @@ interface FactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(faction: FactionEntity) : Long
 
+    @Update
+    suspend fun update(faction: FactionEntity)
+
     @Delete
     suspend fun delete(faction: FactionEntity) : Int
 }

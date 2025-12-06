@@ -7,4 +7,8 @@ import androidx.room.PrimaryKey
 data class FactionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
+
+    val rank: Int = 0,               // 0..4
+    val controlHard: Boolean = false,// true = Жесткий, false = Слабый
+    val relationship: Int = 0        // -3..+3
 )
