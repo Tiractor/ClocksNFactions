@@ -30,10 +30,15 @@ class FactionViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch { repo.delete(f) }
     }
 
-    // --- Новые методы управления свойствами фракции ---
+    fun updateNoteForFaction(f: FactionEntity, newNote: String) {
+        if (f.note == newNote) return
+        viewModelScope.launch {
+            repo.update(f.copy(note = newNote))
+        }
+    }
 
     fun updateRank(f: FactionEntity, delta: Int) {
-        val newRank = (f.rank + delta).coerceIn(0, 4)
+        val newRank = (f.rank + delta).coerceIn(0, 6)
         if (newRank == f.rank) return
         viewModelScope.launch {
             repo.update(f.copy(rank = newRank))

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -28,7 +29,8 @@ fun FactionItem(
     onToggleControl: () -> Unit,
     onRelationshipChange: (Int) -> Unit,
     onDelete: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onUpdateNote: (String) -> Unit
 ) {
     var hintVisible by remember { mutableStateOf(false) }
 
@@ -113,6 +115,10 @@ fun FactionItem(
                     checked = faction.controlHard,
                     onCheckedChange = { onToggleControl() }
                 )
+            }
+
+            IconButton(onClick = { showEditNote = true }) {
+                Icon(Icons.Default.Edit, contentDescription = "Редактировать заметку")
             }
         }
     }

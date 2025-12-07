@@ -10,5 +10,7 @@ data class ClockEntity(
     val factionId: Long,   // связь с фракцией
     val name: String,      // название
     val segments: Int,     // количество секций (4,6,8,...)
-    val filled: Int        // количество заполненных секций
+    val filled: Int,        // количество заполненных секций
+
+    val note: String? = null
 )
