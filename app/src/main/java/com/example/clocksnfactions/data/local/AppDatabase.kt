@@ -12,7 +12,7 @@ import com.example.clocksnfactions.data.local.entities.ClockEntity
         FactionEntity::class,
         ClockEntity::class
     ],
-    version = 3
+    version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun factionDao(): FactionDao

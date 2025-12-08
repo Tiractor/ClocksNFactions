@@ -36,23 +36,31 @@ class ClockViewModel(application: Application, private val factionId: Long) :
     }
 
     fun createClock(name: String, segments: Int) {
+        // логируем входные параметры
+        Log.d("Clock","createClock called: factionId=$factionId name='$name' segments=$segments")
         viewModelScope.launch {
             try {
-                val id = repo.create(factionId, name, segments)
-                Log.d("REPO", "created clock id=$id for faction=$factionId")
-            } catch (t: Throwable) {
-                Log.e("REPO", "create error", t)
+                val id = repo.create(factionId, name.ifBlank { "Счётчик" }, segments)
+                Log.d("Clock","createClock inserted id=$id")
+            } catch (e: Exception) {
+                Log.d("Clock", "createClock failed")
             }
         }
     }
 
+    fun updateClockNote(c: ClockEntity, note: String?) {
+        val normalized = note?.takeIf { it.isNotBlank() }
+        viewModelScope.launch {
+            repo.update(c.copy(note = normalized))
+        }
+    }
+
+
     fun incrementById(clockId: Long) {
         val current = _clocks.value.find { it.id == clockId } ?: run {
-            Log.w("CLOCKS", "incrementById: clock not found id=$clockId")
             return
         }
         val newFilled = (current.filled + 1).coerceAtMost(current.segments)
-        Log.d("CLOCKS", "incrementById id=$clockId old=${current.filled} new=$newFilled seg=${current.segments}")
 
         // Optimistic update локально:
         _clocks.update { list -> list.map { if (it.id == clockId) it.copy(filled = newFilled) else it } }
@@ -61,15 +69,12 @@ class ClockViewModel(application: Application, private val factionId: Long) :
         viewModelScope.launch {
             try {
                 repo.update(current.copy(filled = newFilled))
-                Log.d("CLOCKS", "db updated id=$clockId to filled=$newFilled")
             } catch (t: Throwable) {
-                Log.e("CLOCKS", "db update failed for id=$clockId", t)
                 // rollback
                 _clocks.update { list -> list.map { if (it.id == clockId) current else it } }
             }
         }
     }
-
     fun decrementById(clockId: Long) {
         val current = _clocks.value.find { it.id == clockId } ?: run {
             Log.w("CLOCKS", "decrementById: clock not found id=$clockId")

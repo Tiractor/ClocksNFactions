@@ -10,5 +10,7 @@ data class FactionEntity(
 
     val rank: Int = 0,               // 0..4
     val controlHard: Boolean = false,// true = Жесткий, false = Слабый
-    val relationship: Int = 0        // -3..+3
+    val relationship: Int = 0,
+
+    val note: String? = null
 )
