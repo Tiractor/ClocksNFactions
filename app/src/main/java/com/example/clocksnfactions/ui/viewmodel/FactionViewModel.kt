@@ -36,7 +36,11 @@ class FactionViewModel(application: Application) : AndroidViewModel(application)
             repo.update(f.copy(note = normalized))
         }
     }
-
+    fun updateFaction(f: FactionEntity) {
+        viewModelScope.launch {
+            repo.update(f)
+        }
+    }
 
     fun updateRank(f: FactionEntity, delta: Int) {
         val newRank = (f.rank + delta).coerceIn(0, 6)

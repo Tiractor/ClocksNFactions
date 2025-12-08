@@ -13,19 +13,19 @@ import androidx.compose.foundation.layout.imePadding
 
 @Composable
 fun EditNoteDialog(
-    initialText: String?,
-    title: String = "Комментарий",
-    onDismiss: () -> Unit,
-    onSave: (String) -> Unit,
-    widthDp: Dp = 340.dp,
-    heightDp: Dp = 220.dp
+                   initialName: String = "",
+                   initialNote: String = "",
+                   title: String = "Редактировать",
+                   onDismiss: () -> Unit,
+                   onSave: (name: String, note: String) -> Unit,
+                   widthDp: Dp = 360.dp,
+                   heightDp: Dp = 240.dp
 ) {
-    var text by remember { mutableStateOf(initialText ?: "") }
+    var name by remember { mutableStateOf(initialName) }
+    var note by remember { mutableStateOf(initialNote) }
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
 
-    // AlertDialog использует платформенную ширину, но внутри мы ограничим размер контейнера,
-    // чтобы при вводе ничего резко не прыгало.
     AlertDialog(
         onDismissRequest = {
             focusManager.clearFocus()
@@ -33,45 +33,70 @@ fun EditNoteDialog(
         },
         title = { Text(text = title) },
         text = {
-            // фиксированный контейнер — ширина/высота контролируемые
             Box(
                 modifier = Modifier
                     .width(widthDp)
                     .height(heightDp)
             ) {
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
                 ) {
-                    // Основное поле — занимает доступное пространство и сдвигается при IME
+                    // Имя — single line
                     OutlinedTextField(
-                        value = text,
-                        onValueChange = { text = it },
+                        value = name,
+                        onValueChange = { name = it },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        label = { Text("Название") },
+                        singleLine = true,
+                        maxLines = 1
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Комментарий — занимает оставшееся пространство, реагирует на IME
+                    OutlinedTextField(
+                        value = note,
+                        onValueChange = { note = it },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
-                            .imePadding(), // предотвращает перекрытие текста клавиатурой
-                        placeholder = { Text("Введите комментарий...") },
+                            .imePadding(),
+                        label = { Text("Комментарий (опционально)") },
+                        placeholder = { Text("Например: главный штаб в порту") },
                         singleLine = false,
-                        maxLines = 10
+                        maxLines = 8
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
                         TextButton(onClick = {
                             focusManager.clearFocus()
                             onDismiss()
-                        }) { Text("Отмена") }
+                        }) {
+                            Text("Отмена")
+                        }
+
                         Spacer(modifier = Modifier.width(8.dp))
+
                         Button(onClick = {
                             focusManager.clearFocus()
                             keyboard?.hide()
-                            onSave(text.trim())
-                        }) { Text("Сохранить") }
+                            onSave(name.trim(), note.trim())
+                        }) {
+                            Text("Сохранить")
+                        }
                     }
                 }
             }
         },
-        buttons = {  },
+        buttons = { /* кнопки внутри body */ },
         properties = DialogProperties(usePlatformDefaultWidth = true)
     )
 }

@@ -10,13 +10,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.clocksnfactions.data.local.entities.ClockEntity
 import com.example.clocksnfactions.ui.components.AddClockDialog
-import com.example.clocksnfactions.ui.components.ClockListRow
+import com.example.clocksnfactions.ui.components.ClockItem
 import com.example.clocksnfactions.ui.viewmodel.ClockViewModel
 import com.example.clocksnfactions.ui.viewmodel.ClockViewModelFactory
 
@@ -63,13 +61,14 @@ fun FactionDetailsScreen(
                 }
                 LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
                     items(clocks, key = { it.id }) { c ->
-                        ClockListRow(clock = c,
+                        ClockItem(clock = c,
                             onInc = { vm.incrementById(c.id) },
                             onDec = { vm.decrementById(c.id) },
                             onDelete = { vm.delete(clock = c) },
-                            onUpdateNote = { newNote ->
-                                vm.updateClockNote(c, newNote)
+                            onUpdate = { updatedClock ->
+                                vm.updateClock(updatedClock)
                             }
+
                         )
                     }
                 }

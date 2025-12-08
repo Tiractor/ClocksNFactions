@@ -60,7 +60,9 @@ fun MainScreen(viewModel: FactionViewModel) {
                                 selectedFactionId = f.id
                                 selectedFactionName = f.name
                             },
-                            onUpdateNote = { note -> viewModel.updateNoteForFaction(f, note) }
+                            onUpdate = { updatedFaction ->
+                                viewModel.updateFaction(updatedFaction)
+                            }
                         )
                     }
                 }
