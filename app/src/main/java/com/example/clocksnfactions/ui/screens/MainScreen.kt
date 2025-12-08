@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.clocksnfactions.ui.viewmodel.FactionViewModel
-import com.example.clocksnfactions.ui.components.FactionRow
 import com.example.clocksnfactions.ui.components.FactionItem
 import com.example.clocksnfactions.ui.components.AddFactionDialog
 /**
@@ -60,7 +59,8 @@ fun MainScreen(viewModel: FactionViewModel) {
                             onClick = {
                                 selectedFactionId = f.id
                                 selectedFactionName = f.name
-                            }
+                            },
+                            onUpdateNote = { note -> viewModel.updateNoteForFaction(f, note) }
                         )
                     }
                 }

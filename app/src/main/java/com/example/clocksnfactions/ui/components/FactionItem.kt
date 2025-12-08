@@ -1,7 +1,6 @@
 package com.example.clocksnfactions.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,9 +29,16 @@ fun FactionItem(
     onRelationshipChange: (Int) -> Unit,
     onDelete: () -> Unit,
     onClick: () -> Unit,
-    onUpdateNote: (String) -> Unit
+    onUpdateNote: (String?) -> Unit
 ) {
+    // Видимость подсказки и диалога редактирования заметки
     var hintVisible by remember { mutableStateOf(false) }
+    var showEditNote by remember { mutableStateOf(false) }
+
+    // Короткое превью заметки (если есть)
+    val preview = faction.note?.takeIf { it.isNotBlank() }?.let {
+        if (it.length > 160) it.take(160) + "…" else it
+    }
 
     Card(
         modifier = Modifier
@@ -43,57 +49,55 @@ fun FactionItem(
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            // Верхняя строка — название и кнопка редактирования заметки
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = faction.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Ранг:", modifier = Modifier.padding(end = 6.dp))
-                        Text("${faction.rank}", fontWeight = FontWeight.Medium)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        IconButton(onClick = { onRankChange(+1) }) {
-                            Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Increase rank")
-                        }
-                        IconButton(onClick = { onRankChange(-1) }, enabled = faction.rank > 0) {
-                            Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Decrease rank")
-                        }
-                    }
                 }
 
-                Column(horizontalAlignment = Alignment.End) {
-                    // Control toggle
-                    val badgeColor = if (faction.controlHard) Color(0xFFD32F2F) else Color(0xFF388E3C)
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(badgeColor)
-                            .padding(horizontal = 8.dp, vertical = 6.dp)
-                    ) {
-                        Text(if (faction.controlHard) "Жёсткий" else "Слабый", color = Color.White)
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    // delete small button
-                    TextButton(onClick = onDelete) {
-                        Text("Удалить", color = Color.Red)
-                    }
+                IconButton(onClick = { showEditNote = true }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Редактировать заметку")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Ранг и кнопки изменения
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("Ранг:", modifier = Modifier.padding(end = 8.dp))
+                Text("${faction.rank}", fontWeight = FontWeight.Medium)
+                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(onClick = { onRankChange(+1) }, enabled = faction.rank < 4) {
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Увеличить ранг")
+                }
+                IconButton(onClick = { onRankChange(-1) }, enabled = faction.rank > 0) {
+                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Уменьшить ранг")
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                // delete small button (справа)
+                TextButton(onClick = onDelete) {
+                    Text("Удалить", color = Color.Red)
                 }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            // Отношение и подсказка
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Отношение:", modifier = Modifier.padding(end = 8.dp))
                 Text("${if (faction.relationship >= 0) "+" else ""}${faction.relationship}", fontWeight = FontWeight.Medium)
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { onRelationshipChange(+1) }, enabled = faction.relationship < 3) {
-                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Increase relation")
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Увеличить отношение")
                 }
                 IconButton(onClick = { onRelationshipChange(-1) }, enabled = faction.relationship > -3) {
-                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Decrease relation")
+                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Уменьшить отношение")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { hintVisible = !hintVisible }) {
-                    Icon(Icons.Default.Info, contentDescription = "Hint")
+                    Icon(Icons.Default.Info, contentDescription = "Подсказка по отношениям")
                 }
             }
 
@@ -106,20 +110,52 @@ fun FactionItem(
                 )
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // control toggle row (switch style)
+            // Контроль (переключатель)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Контроль:", modifier = Modifier.weight(1f))
+                // визуальный бейдж + переключатель
+                val badgeColor = if (faction.controlHard) Color(0xFFD32F2F) else Color(0xFF388E3C)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(badgeColor)
+                        .padding(horizontal = 8.dp, vertical = 6.dp)
+                ) {
+                    Text(if (faction.controlHard) "Жёсткий" else "Слабый", color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
                 Switch(
                     checked = faction.controlHard,
                     onCheckedChange = { onToggleControl() }
                 )
             }
 
-            IconButton(onClick = { showEditNote = true }) {
-                Icon(Icons.Default.Edit, contentDescription = "Редактировать заметку")
+            // Превью заметки (короткий текст)
+            if (!preview.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = preview, color = Color.Gray, fontSize = 13.sp)
             }
         }
+    }
+
+    // Диалог редактирования заметки — располагаем после карточки, чтобы он нависал поверх UI
+    if (showEditNote) {
+        EditNoteDialog(
+            initialText = faction.note,
+            title = "Комментарий к фракции",
+            onDismiss = { showEditNote = false },
+            onSave = { newNote ->
+                // Сохраняем null если строка пустая, чтобы не хранить пустые строки
+                val normalized: String? = newNote.takeIf { it.isNotBlank() }
+                onUpdateNote(normalized)
+                showEditNote = false
+            },
+            widthDp = 360.dp,
+            heightDp = 220.dp
+        )
     }
 }

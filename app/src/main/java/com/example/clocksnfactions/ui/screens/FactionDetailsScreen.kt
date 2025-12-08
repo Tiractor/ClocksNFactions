@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.clocksnfactions.data.local.entities.ClockEntity
 import com.example.clocksnfactions.ui.components.AddClockDialog
-import com.example.clocksnfactions.ui.components.ClockView
+import com.example.clocksnfactions.ui.components.ClockListRow
 import com.example.clocksnfactions.ui.viewmodel.ClockViewModel
 import com.example.clocksnfactions.ui.viewmodel.ClockViewModelFactory
 
@@ -66,7 +66,11 @@ fun FactionDetailsScreen(
                         ClockListRow(clock = c,
                             onInc = { vm.incrementById(c.id) },
                             onDec = { vm.decrementById(c.id) },
-                            onDelete = { vm.delete(clock = c) })
+                            onDelete = { vm.delete(clock = c) },
+                            onUpdateNote = { newNote ->
+                                vm.updateClockNote(c, newNote)
+                            }
+                        )
                     }
                 }
             }
@@ -79,25 +83,6 @@ fun FactionDetailsScreen(
                         showAdd = false
                     }
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ClockListRow(clock: ClockEntity, onInc: () -> Unit, onDec: () -> Unit, onDelete: () -> Unit) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 6.dp)
-    ) {
-        Row(modifier = Modifier.padding(12.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = if (clock.name.isNotBlank()) clock.name else "Счётчик")
-                Spacer(modifier = Modifier.height(8.dp))
-                ClockView(clock = clock, onIncrement = onInc, onDecrement = onDec, modifier = Modifier.size(120.dp))
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Удалить")
             }
         }
     }

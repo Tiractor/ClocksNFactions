@@ -4,7 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.foundation.layout.imePadding
 
 @Composable
 fun EditNoteDialog(
@@ -16,52 +21,57 @@ fun EditNoteDialog(
     heightDp: Dp = 220.dp
 ) {
     var text by remember { mutableStateOf(initialText ?: "") }
+    val focusManager = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
 
+    // AlertDialog использует платформенную ширину, но внутри мы ограничим размер контейнера,
+    // чтобы при вводе ничего резко не прыгало.
     AlertDialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Surface(
-            modifier = Modifier
-                .width(widthDp)
-                .height(heightDp)
-                .padding(16.dp),
-            shape = RoundedCornerShape(12.dp),
-            elevation = 8.dp
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Text(text = title, style = MaterialTheme.typography.h6)
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Отдельный контейнер фиксированного размера:
-                Box(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
+        onDismissRequest = {
+            focusManager.clearFocus()
+            onDismiss()
+        },
+        title = { Text(text = title) },
+        text = {
+            // фиксированный контейнер — ширина/высота контролируемые
+            Box(
+                modifier = Modifier
+                    .width(widthDp)
+                    .height(heightDp)
+            ) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp)
                 ) {
-                    // Поле ввода с ограничением на строки и placeholder
+                    // Основное поле — занимает доступное пространство и сдвигается при IME
                     OutlinedTextField(
                         value = text,
                         onValueChange = { text = it },
                         modifier = Modifier
-                            .fillMaxSize()
-                            .imePadding(), // чтобы содержимое не перекрывалось клавиатурой
-                        placeholder = { Text("Например: главный штаб в порту") },
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .imePadding(), // предотвращает перекрытие текста клавиатурой
+                        placeholder = { Text("Введите комментарий...") },
                         singleLine = false,
-                        maxLines = 6
+                        maxLines = 10
                     )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = onDismiss) { Text("Отмена") }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(onClick = { onSave(text.trim()) }) { Text("Сохранить") }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        TextButton(onClick = {
+                            focusManager.clearFocus()
+                            onDismiss()
+                        }) { Text("Отмена") }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Button(onClick = {
+                            focusManager.clearFocus()
+                            keyboard?.hide()
+                            onSave(text.trim())
+                        }) { Text("Сохранить") }
+                    }
                 }
             }
-        }
-    }
+        },
+        buttons = {  },
+        properties = DialogProperties(usePlatformDefaultWidth = true)
+    )
 }

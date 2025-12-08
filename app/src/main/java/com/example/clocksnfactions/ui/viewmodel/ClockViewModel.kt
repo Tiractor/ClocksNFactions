@@ -36,15 +36,25 @@ class ClockViewModel(application: Application, private val factionId: Long) :
     }
 
     fun createClock(name: String, segments: Int) {
+        // логируем входные параметры
+        Log.d("Clock","createClock called: factionId=$factionId name='$name' segments=$segments")
         viewModelScope.launch {
+            try {
+                val id = repo.create(factionId, name.ifBlank { "Счётчик" }, segments)
+                Log.d("Clock","createClock inserted id=$id")
+            } catch (e: Exception) {
+                Log.d("Clock", "createClock failed")
+            }
         }
     }
-    fun updateNoteForClock(c: ClockEntity, newNote: String) {
-        if (c.note == newNote) return
+
+    fun updateClockNote(c: ClockEntity, note: String?) {
+        val normalized = note?.takeIf { it.isNotBlank() }
         viewModelScope.launch {
-            repo.update(c.copy(note = newNote))
+            repo.update(c.copy(note = normalized))
         }
     }
+
 
     fun incrementById(clockId: Long) {
         val current = _clocks.value.find { it.id == clockId } ?: run {
@@ -65,7 +75,6 @@ class ClockViewModel(application: Application, private val factionId: Long) :
             }
         }
     }
-
     fun decrementById(clockId: Long) {
         val current = _clocks.value.find { it.id == clockId } ?: run {
             Log.w("CLOCKS", "decrementById: clock not found id=$clockId")

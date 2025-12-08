@@ -30,12 +30,13 @@ class FactionViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch { repo.delete(f) }
     }
 
-    fun updateNoteForFaction(f: FactionEntity, newNote: String) {
-        if (f.note == newNote) return
+    fun updateNoteForFaction(f: FactionEntity, newNote: String?) {
+        val normalized = newNote?.takeIf { it.isNotBlank() }
         viewModelScope.launch {
-            repo.update(f.copy(note = newNote))
+            repo.update(f.copy(note = normalized))
         }
     }
+
 
     fun updateRank(f: FactionEntity, delta: Int) {
         val newRank = (f.rank + delta).coerceIn(0, 6)
