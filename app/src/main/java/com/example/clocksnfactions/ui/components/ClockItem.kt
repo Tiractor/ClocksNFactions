@@ -5,7 +5,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -76,7 +75,7 @@ fun ClockItem(
 
     // ДИАЛОГ РЕДАКТИРОВАНИЯ КОММЕНТАРИЯ
     if (showEdit) {
-        EditNoteDialog(
+        EditDialog(
             initialName = clock.name,
             initialNote = clock.note ?: "",
             title = "Редактировать счётчик",

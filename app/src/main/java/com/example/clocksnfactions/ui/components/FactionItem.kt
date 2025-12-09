@@ -141,7 +141,7 @@ fun FactionItem(
 
     // Диалог редактирования заметки — располагаем после карточки, чтобы он нависал поверх UI
     if (showEdit) {
-        EditNoteDialog(
+        EditDialog(
             initialName = faction.name,
             initialNote = faction.note ?: "",
             title = "Комментарий к фракции",
@@ -150,8 +150,6 @@ fun FactionItem(
                 onUpdate(faction.copy(name = newName, note = newNote.ifBlank { null }))
                 showEdit = false
             },
-            widthDp = 360.dp,
-            heightDp = 220.dp
         )
     }
 }
