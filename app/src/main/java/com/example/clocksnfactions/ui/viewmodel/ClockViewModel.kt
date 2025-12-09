@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clocksnfactions.App
 import com.example.clocksnfactions.data.local.entities.ClockEntity
-import com.example.clocksnfactions.data.local.entities.FactionEntity
 import com.example.clocksnfactions.data.repository.ClockRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
