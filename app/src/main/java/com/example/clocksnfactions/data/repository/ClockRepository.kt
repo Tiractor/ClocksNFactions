@@ -16,10 +16,8 @@ class ClockRepository(private val dao: ClockDao) {
         try {
             val entity = ClockEntity(factionId = fId, name = name, segments = seg, filled = 0)
             val id = dao.insert(entity)
-            Log.d("Clock","ClockRepository.create -> inserted id=$id for faction=$fId")
             return id
         } catch (e: Exception) {
-            Log.d("Clock", "ClockRepository.create failed for faction=$fId name=$name seg=$seg")
             throw e
         }
     }

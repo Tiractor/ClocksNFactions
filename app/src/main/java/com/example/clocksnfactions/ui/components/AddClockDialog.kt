@@ -20,12 +20,10 @@ fun AddClockDialog(
     var custom by remember { mutableStateOf("") }
     var preset by remember { mutableStateOf(6) }
 
-    // Экранные размеры
     val config = LocalConfiguration.current
     val screenW = config.screenWidthDp.dp
     val screenH = config.screenHeightDp.dp
 
-    // Диалог — 85% ширины, 35% высоты
     val dialogWidth = (screenW * 0.85f).coerceAtMost(600.dp)
     val dialogHeight = (screenH * 0.5f)
         .coerceIn(220.dp, screenH * 0.7f)
@@ -51,7 +49,6 @@ fun AddClockDialog(
 
                 Spacer(Modifier.height(12.dp))
 
-                // Прокручиваемая часть
                 val scroll = rememberScrollState()
                 Column(
                     modifier = Modifier
@@ -77,11 +74,34 @@ fun AddClockDialog(
                     Row {
                         listOf(4, 6, 8).forEach { v ->
                             val selected = (preset == v)
+
                             OutlinedButton(
-                                onClick = { preset = v },
+                                onClick = {
+                                    preset = v
+                                    custom = ""
+                                },
+                                colors = ButtonDefaults.outlinedButtonColors(
+                                    backgroundColor = if (selected)
+                                        MaterialTheme.colors.primary.copy(alpha = 0.15f)
+                                    else
+                                        MaterialTheme.colors.surface
+                                ),
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = if (selected)
+                                        MaterialTheme.colors.primary
+                                    else
+                                        MaterialTheme.colors.onSurface.copy(alpha = 0.4f)
+                                ),
                                 modifier = Modifier.padding(end = 8.dp)
                             ) {
-                                Text("$v")
+                                Text(
+                                    "$v",
+                                    color = if (selected)
+                                        MaterialTheme.colors.primary
+                                    else
+                                        MaterialTheme.colors.onSurface
+                                )
                             }
                         }
                     }

@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Получаем AndroidViewModel через стандартный фабричный провайдер
         viewModel = ViewModelProvider(this).get(FactionViewModel::class.java)
 
         setContent {

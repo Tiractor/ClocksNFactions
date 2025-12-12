@@ -24,15 +24,12 @@ fun FactionDetailsScreen(
     factionName: String,
     onBack: () -> Unit
 ) {
-    // ViewModel с фабрикой, передаём factionId
     val application = LocalContext.current.applicationContext as Application
     val factory = ClockViewModelFactory(application, factionId)
     val vm: ClockViewModel = viewModel(
         key = "ClockVM-$factionId",
         factory = factory
     )
-    LaunchedEffect(Unit) { Log.d("DEBUG_FN", "FactionDetailsScreen opened for factionId=$factionId") }
-    LaunchedEffect(vm.clocks) { Log.d("DEBUG_FN", "clocks for factionId=$factionId: ${vm.clocks.value.map{it.id}}") }
 
     val clocks by vm.clocks.collectAsState()
     var showAdd by remember { mutableStateOf(false) }

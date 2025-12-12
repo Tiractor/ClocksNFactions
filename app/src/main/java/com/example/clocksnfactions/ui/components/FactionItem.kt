@@ -31,11 +31,9 @@ fun FactionItem(
     onClick: () -> Unit,
     onUpdate: (FactionEntity) -> Unit
 ) {
-    // Видимость подсказки и диалога редактирования заметки
     var hintVisible by remember { mutableStateOf(false) }
     var showEdit by remember { mutableStateOf(false) }
 
-    // Короткое превью заметки (если есть)
     val preview = faction.note?.takeIf { it.isNotBlank() }?.let {
         if (it.length > 160) it.take(160) + "…" else it
     }
@@ -50,7 +48,6 @@ fun FactionItem(
     ) {
         
         Column(modifier = Modifier.padding(12.dp)) {
-            // Верхняя строка — название и кнопка редактирования заметки
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = faction.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -63,7 +60,6 @@ fun FactionItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Ранг и кнопки изменения
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Ранг:", modifier = Modifier.padding(end = 8.dp))
                 Text("${faction.rank}", fontWeight = FontWeight.Medium)
@@ -78,7 +74,6 @@ fun FactionItem(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Отношение и подсказка
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Отношение:", modifier = Modifier.padding(end = 8.dp))
                 Text("${if (faction.relationship >= 0) "+" else ""}${faction.relationship}", fontWeight = FontWeight.Medium)
@@ -106,10 +101,8 @@ fun FactionItem(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Контроль (переключатель)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Контроль:", modifier = Modifier.weight(1f))
-                // визуальный бейдж + переключатель
                 val badgeColor = if (faction.controlHard) Color(0xFFD32F2F) else Color(0xFF388E3C)
                 Box(
                     modifier = Modifier
@@ -131,7 +124,7 @@ fun FactionItem(
                 IconButton(onClick = { showEdit = true }) {
                     Icon(Icons.Default.Edit, contentDescription = "Редактировать заметку")
                 }
-                // Превью заметки (короткий текст)
+
                 if (!preview.isNullOrEmpty()) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(text = preview, color = Color.Gray, fontSize = 13.sp)
@@ -140,7 +133,6 @@ fun FactionItem(
         }
     }
 
-    // Диалог редактирования заметки — располагаем после карточки, чтобы он нависал поверх UI
     if (showEdit) {
         EditDialog(
             initialName = faction.name,

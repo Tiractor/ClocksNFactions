@@ -36,7 +36,6 @@ fun ClockView(
     ) {
         val radius = size.minDimension / 2 - radiusInset
 
-        // Поворачиваем начало на -90°, чтобы старт был на 12 часах
         rotate(-90f) {
 
             // Рисуем сегменты

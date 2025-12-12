@@ -20,8 +20,8 @@ fun EditDialog(
     title: String = "Редактировать",
     onDismiss: () -> Unit,
     onSave: (name: String, note: String) -> Unit,
-    widthFraction: Float = 0.85f,   // ширина как доля экрана
-    heightFraction: Float = 0.40f   // высота как доля экрана
+    widthFraction: Float = 0.85f,
+    heightFraction: Float = 0.40f
 ) {
     var name by remember { mutableStateOf(initialName) }
     var note by remember { mutableStateOf(initialNote) }
@@ -30,7 +30,6 @@ fun EditDialog(
     val screenW = configuration.screenWidthDp.dp
     val screenH = configuration.screenHeightDp.dp
 
-    // вычисляем размеры
     val dialogWidth = (screenW * widthFraction).coerceIn(280.dp, 600.dp)
     val dialogHeight = (screenH * heightFraction).coerceIn(200.dp, screenH * 0.8f)
 
@@ -52,12 +51,10 @@ fun EditDialog(
                     .padding(12.dp)
             ) {
 
-                // Заголовок
                 Text(text = title, style = MaterialTheme.typography.h6)
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Прокручиваемая область, которая НЕ меняет размера диалога
                 val scroll = rememberScrollState()
                 Column(
                     modifier = Modifier
@@ -81,7 +78,7 @@ fun EditDialog(
                         onValueChange = { note = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 80.dp), // фиксированная минимальная зона
+                            .heightIn(min = 80.dp),
                         label = { Text("Комментарий (опционально)") },
                         placeholder = { Text("Например: главный штаб в порту") },
                         singleLine = false,
@@ -91,7 +88,6 @@ fun EditDialog(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Кнопки
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End

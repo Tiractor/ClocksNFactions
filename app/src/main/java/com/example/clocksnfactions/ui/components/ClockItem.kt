@@ -22,7 +22,6 @@ fun ClockItem(
     onUpdate: (ClockEntity) -> Unit
 ) {
     var showEdit by remember { mutableStateOf(false) }
-    // Короткое превью заметки (если есть)
     val preview = clock.note?.takeIf { it.isNotBlank() }?.let {
         if (it.length > 160) it.take(160) + "…" else it
     }
@@ -73,7 +72,6 @@ fun ClockItem(
         }
     }
 
-    // ДИАЛОГ РЕДАКТИРОВАНИЯ КОММЕНТАРИЯ
     if (showEdit) {
         EditDialog(
             initialName = clock.name,
