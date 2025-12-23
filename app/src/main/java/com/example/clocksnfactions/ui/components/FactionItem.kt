@@ -137,7 +137,7 @@ fun FactionItem(
         EditDialog(
             initialName = faction.name,
             initialNote = faction.note ?: "",
-            title = "Комментарий к фракции",
+            title = "Редактирование",
             onDismiss = { showEdit = false },
             onSave = { newName, newNote ->
                 onUpdate(faction.copy(name = newName, note = newNote.ifBlank { null }))

@@ -76,7 +76,7 @@ fun ClockItem(
         EditDialog(
             initialName = clock.name,
             initialNote = clock.note ?: "",
-            title = "Редактировать счётчик",
+            title = "Редактирование",
             onDismiss = { showEdit = false },
             onSave = { newName, newNote ->
                 onUpdate(clock.copy(name = newName, note = newNote.ifBlank { null }))
