@@ -53,9 +53,6 @@ fun FactionDetailsScreen(
                     Text("У этой фракции ещё нет счётчиков. Нажмите +")
                 }
             } else {
-                LaunchedEffect(clocks) {
-                    android.util.Log.d("DEBUG_CLOCKS", "clocks ids = ${clocks.map { it.id }}")
-                }
                 LazyColumn(modifier = Modifier.fillMaxSize().padding(8.dp)) {
                     items(clocks, key = { it.id }) { c ->
                         ClockItem(clock = c,

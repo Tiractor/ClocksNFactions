@@ -9,9 +9,6 @@ class ClockRepository(private val dao: ClockDao) {
 
     fun observe(factionId: Long): Flow<List<ClockEntity>> =
         dao.observeForFaction(factionId)
-
-
-
     suspend fun create(fId: Long, name: String, seg: Int): Long {
         try {
             val entity = ClockEntity(factionId = fId, name = name, segments = seg, filled = 0)
@@ -21,8 +18,6 @@ class ClockRepository(private val dao: ClockDao) {
             throw e
         }
     }
-
-
     suspend fun update(clock: ClockEntity) = dao.update(clock)
 
     suspend fun delete(clock: ClockEntity) = dao.delete(clock)

@@ -10,20 +10,16 @@ import androidx.compose.ui.unit.dp
 import com.example.clocksnfactions.ui.viewmodel.FactionViewModel
 import com.example.clocksnfactions.ui.components.FactionItem
 import com.example.clocksnfactions.ui.components.AddFactionDialog
-/**
- * MainScreen — показывает список фракций. По клику на фракцию открывает экран деталей.
- */
+
 @Composable
 fun MainScreen(viewModel: FactionViewModel) {
     val factions by viewModel.factions.collectAsState()
     var showAddFaction by remember { mutableStateOf(false) }
 
-    // selectedFactionId = null -> показываем список; иначе показываем детали
     var selectedFactionId by remember { mutableStateOf<Long?>(null) }
     var selectedFactionName by remember { mutableStateOf<String?>(null) }
 
     if (selectedFactionId != null) {
-        // Переходим в экран деталей фракции
         FactionDetailsScreen(
             factionId = selectedFactionId!!,
             factionName = selectedFactionName ?: "Фракция",
